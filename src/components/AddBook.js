@@ -1,16 +1,18 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import BookForm from './BookForm';
+import BooksContext from '../context/BooksContext';
 
-const AddBook = () => {
+const AddBook = ({ history }) => { //................ truyền component props vào để sử dụng history từ đâu ? ...
+  const { books, setBooks } = useContext(BooksContext);
+
   const handleOnSubmit = (book) => {
-    console.log(book);
+    setBooks([book, ...books]);
+    history.push('/');
   };
 
   return (
-    // React.Fragment sử dụng để nhóm các phần tử con mà không cần thêm thẻ HTML dư thừa 
-    <React.Fragment> 
+    <React.Fragment>
       <BookForm handleOnSubmit={handleOnSubmit} />
-      {/* handleOnSubmit là một hàm được truyền vào BookForm để xử lý việc gửi dữ liệu sách mới. */}
     </React.Fragment>
   );
 };

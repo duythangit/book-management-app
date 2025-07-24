@@ -3,17 +3,15 @@ import { Form, Button } from 'react-bootstrap';
 import { v4 as uuidv4 } from 'uuid';
 
 const BookForm = (props) => {   // props là đối tượng chứa các thuộc tính được truyền từ component cha, trong trường hợp này là AddBook.
-  const [book, setBook] = useState({ 
-    // book là một đối tượng chứa thông tin về sách, bao gồm tên sách, tác giả, số lượng, giá
-    // setBook là một hàm được sử dụng để cập nhật trạng thái của đối tượng book.
-    // useState được sử dụng để quản lý trạng thái của form, bao gồm thông tin sách và thông báo lỗi.
-
-    bookname: props.book ? props.book.bookname : '', // nếu props.book tồn tại, sử dụng giá trị của nó, nếu không thì sử dụng chuỗi rỗng.
+  const [book, setBook] = useState(() => {
+  return {
+    bookname: props.book ? props.book.bookname : '',
     author: props.book ? props.book.author : '',
     quantity: props.book ? props.book.quantity : '',
     price: props.book ? props.book.price : '',
     date: props.book ? props.book.date : ''
-  });
+  };
+});
 
 
   const [errorMsg, setErrorMsg] = useState('');   
@@ -74,18 +72,24 @@ const BookForm = (props) => {   // props là đối tượng chứa các thuộc
     setErrorMsg(errorMsg);
   };
 
+  // handleInputChange là một hàm được gọi khi người dùng thay đổi giá trị của các trường trong form.
   const handleInputChange = (event) => {
+    // event.target là đối tượng đại diện cho phần tử HTML đã kích hoạt sự kiện (trong trường hợp này là input).
     const { name, value } = event.target;
     switch (name) {
       case 'quantity':
+        // pasreInt(value) === +value kiểm tra xem giá trị có phải là một số nguyên hay không.
         if (value === '' || parseInt(value) === +value) {
-          setBook((prevState) => ({
+          // setBook sẽ cập nhật trạng thái của đối tượng book với giá trị mới.
+          // ...prevState sao chép các thuộc tính hiện tại của đối tượng book và cập nhật giá trị của trường tương ứng.
+          setBook((prevState) => ({                                 
             ...prevState,
             [name]: value
           }));
         }
         break;
       case 'price':
+        // value.match(/^\d{1,}(\.\d{0,2})?$/) kiểm tra xem giá trị có phải là một số hợp lệ với định dạng tiền tệ hay không.
         if (value === '' || value.match(/^\d{1,}(\.\d{0,2})?$/)) {
           setBook((prevState) => ({
             ...prevState,
@@ -149,17 +153,7 @@ const BookForm = (props) => {   // props là đối tượng chứa các thuộc
             onChange={handleInputChange}
           />
         </Form.Group>
-        {/* <Form.Group controlId="date">
-          <Form.Label>Book Date</Form.Label>
-          <Form.Control
-            className="input-control"
-            type="text"
-            name="price"
-            value={date}
-            placeholder="Enter price of book"
-            onChange={handleInputChange}
-          />
-        </Form.Group> */}
+    
         <Button variant="primary" type="submit" className="submit-btn">
           Submit
         </Button>
